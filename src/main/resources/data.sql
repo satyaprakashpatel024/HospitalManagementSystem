@@ -1,0 +1,12 @@
+--INSERT INTO tbl_patient ( name, gender, date_of_birth, email, blood_group, created_at)
+--VALUES
+--    ('Aarav Sharma', 'MALE', '1990-05-10', 'aarav.sharma@example.com', 'O_POSITIVE', '2025-10-22 09:00:00'),
+--    ( 'Diya Patel', 'FEMALE', '1995-08-20', 'diya.patel@example.com', 'A_POSITIVE', '2025-10-22 09:05:00'),
+--    ( 'Dishant Verma', 'MALE', '1988-03-15', 'dishant.verma@example.com', 'A_POSITIVE', '2025-10-22 09:10:00'),
+--    ( 'Neha Iyer', 'FEMALE', '1992-12-01', 'neha.iyer@example.com', 'AB_POSITIVE', '2025-10-22 09:15:00'),
+--    ( 'Kabir Singh', 'MALE', '1993-07-11', 'kabir.singh@example.com', 'O_POSITIVE', '2025-10-22 09:20:00'),
+--    ( 'Sana Kapoor', 'FEMALE', '1985-11-30', 'sana.kapoor@example.com', 'B_POSITIVE', '2025-10-22 09:25:00'),
+--    ( 'Rohit Mehra', 'MALE', '1979-02-18', 'rohit.mehra@example.com', 'O_NEGATIVE', '2025-10-22 09:30:00'),
+--    ( 'Maya Nair', 'FEMALE', '2000-06-05', 'maya.nair@example.com', 'AB_NEGATIVE', '2025-10-22 09:35:00'),
+--    ( 'Vikram Joshi', 'MALE', '1982-09-09', 'vikram.joshi@example.com', 'B_NEGATIVE', '2025-10-22 09:40:00'),
+--    ( 'Anika Rao', 'FEMALE', '1998-04-27', 'anika.rao@example.com', 'A_NEGATIVE', '2025-10-22 09:45:00');
