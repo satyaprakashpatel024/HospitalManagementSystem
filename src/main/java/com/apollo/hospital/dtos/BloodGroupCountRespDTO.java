@@ -1,6 +1,6 @@
-package com.apollo.hospital.dto;
+package com.apollo.hospital.dtos;
 
-import com.apollo.hospital.entity.types.BloodGroupType;
+import com.apollo.hospital.entities.types.BloodGroupType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

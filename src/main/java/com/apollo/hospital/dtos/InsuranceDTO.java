@@ -1,4 +1,4 @@
-package com.apollo.hospital.dto;
+package com.apollo.hospital.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;

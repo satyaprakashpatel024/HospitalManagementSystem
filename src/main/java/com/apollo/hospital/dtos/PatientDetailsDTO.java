@@ -1,6 +1,6 @@
-package com.apollo.hospital.dto;
+package com.apollo.hospital.dtos;
 
-import com.apollo.hospital.entity.types.BloodGroupType;
+import com.apollo.hospital.entities.types.BloodGroupType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatientDTO {
+public class PatientDetailsDTO {
     private Long id;
     private String name;
     private String email;
@@ -22,6 +22,5 @@ public class PatientDTO {
     private String gender;
     private LocalDateTime createdAt;
     private BloodGroupType bloodGroup;
-    private Long insuranceId;
     private InsuranceDTO insurance;
 }

@@ -1,8 +1,8 @@
-package com.apollo.hospital.repository;
+package com.apollo.hospital.repositories;
 
-import  com.apollo.hospital.dto.BloodGroupCountRespDTO;
-import  com.apollo.hospital.entity.Patient;
-import  com.apollo.hospital.entity.types.BloodGroupType;
+import  com.apollo.hospital.dtos.BloodGroupCountRespDTO;
+import  com.apollo.hospital.entities.Patient;
+import  com.apollo.hospital.entities.types.BloodGroupType;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     // this method uses naming as parameter binding
     @Query("SELECT p FROM Patient p WHERE p.dob > :date")
     List<Patient> findWhoBornAfterDate(@Param("date") LocalDate date);
-    @Query("SELECT new com.apollo.hospital.dto.BloodGroupCountRespDTO(p.bloodGroup, COUNT(p)) FROM Patient p GROUP BY p.bloodGroup")
+    @Query("SELECT new com.apollo.hospital.dtos.BloodGroupCountRespDTO(p.bloodGroup, COUNT(p)) FROM Patient p GROUP BY p.bloodGroup")
     List<BloodGroupCountRespDTO> findPatientCountByBloodGroup();
     // native query
     @Query(value = "select * from tbl_patient",nativeQuery = true)
