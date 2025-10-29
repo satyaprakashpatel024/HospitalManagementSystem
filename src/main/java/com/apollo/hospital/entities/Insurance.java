@@ -1,5 +1,6 @@
-package com.apollo.hospital.entity;
+package com.apollo.hospital.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -38,7 +39,7 @@ public class Insurance {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @ToString.Exclude
+    @JsonIgnore
     @OneToOne(mappedBy = "insurance")
     private Patient patient;
 

@@ -1,4 +1,4 @@
-package com.apollo.hospital.entity.types;
+package com.apollo.hospital.entities.types;
 
 public enum BloodGroupType {
     A_POSITIVE,

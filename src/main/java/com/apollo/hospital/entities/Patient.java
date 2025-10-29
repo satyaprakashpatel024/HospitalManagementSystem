@@ -1,6 +1,6 @@
-package com.apollo.hospital.entity;
+package com.apollo.hospital.entities;
 
-import com.apollo.hospital.entity.types.BloodGroupType;
+import com.apollo.hospital.entities.types.BloodGroupType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;

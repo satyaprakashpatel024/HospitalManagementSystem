@@ -1,4 +1,4 @@
-package com.apollo.hospital.entity;
+package com.apollo.hospital.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

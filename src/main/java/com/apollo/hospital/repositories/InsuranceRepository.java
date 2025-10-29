@@ -1,6 +1,6 @@
-package com.apollo.hospital.repository;
+package com.apollo.hospital.repositories;
 
-import com.apollo.hospital.entity.Insurance;
+import com.apollo.hospital.entities.Insurance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

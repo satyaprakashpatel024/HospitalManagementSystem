@@ -1,6 +1,6 @@
-package com.apollo.hospital.repository;
+package com.apollo.hospital.repositories;
 
-import com.apollo.hospital.entity.Appointment;
+import com.apollo.hospital.entities.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {

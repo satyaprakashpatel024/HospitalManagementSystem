@@ -1,10 +1,10 @@
 package com.apollo.hospital.services;
 
-import  com.apollo.hospital.entity.Appointment;
-import  com.apollo.hospital.entity.Doctor;
-import  com.apollo.hospital.repository.AppointmentRepository;
-import  com.apollo.hospital.repository.DoctorRepository;
-import  com.apollo.hospital.repository.PatientRepository;
+import  com.apollo.hospital.entities.Appointment;
+import  com.apollo.hospital.entities.Doctor;
+import  com.apollo.hospital.repositories.AppointmentRepository;
+import  com.apollo.hospital.repositories.DoctorRepository;
+import  com.apollo.hospital.repositories.PatientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
