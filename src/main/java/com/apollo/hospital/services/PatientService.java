@@ -1,13 +1,14 @@
 package com.apollo.hospital.services;
 
-import  com.apollo.hospital.dtos.InsuranceDTO;
+import com.apollo.hospital.dtos.InsuranceDTO;
 import com.apollo.hospital.dtos.PatientDetailsDTO;
 import com.apollo.hospital.dtos.PatientSummaryDTO;
-import  com.apollo.hospital.entities.Insurance;
-import  com.apollo.hospital.entities.Patient;
-import  com.apollo.hospital.entities.types.BloodGroupType;
+import com.apollo.hospital.dtos.request.PatientReqDTO;
+import com.apollo.hospital.entities.Insurance;
+import com.apollo.hospital.entities.Patient;
+import com.apollo.hospital.entities.types.BloodGroupType;
 import com.apollo.hospital.exceptions.ResourceNotFoundException;
-import  com.apollo.hospital.repositories.PatientRepository;
+import com.apollo.hospital.repositories.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -37,18 +38,18 @@ public class PatientService {
         return this.convertToPatientDetailsDTO(patient);
     }
 
-    public PatientSummaryDTO createPatient(PatientSummaryDTO patient) {
+    public PatientSummaryDTO createPatient(PatientReqDTO patient) {
         Patient newPatient = this.convertToPatientEntity(patient);
         Patient save = patientRepository.save(newPatient);
         return this.convertToPatientSummaryDTO(save);
     }
 
-    public PatientDetailsDTO updatePatient(Long id, PatientDetailsDTO patientDetails) throws ResourceNotFoundException {
+    public PatientDetailsDTO updatePatient(Long id, PatientReqDTO patientReqDTO) throws ResourceNotFoundException {
         Patient patient = patientRepository.findById(id).orElse(null);
         if (patient != null) {
-            mapper.map(patientDetails, patient);
+            mapper.map(patientReqDTO, patient);
             Patient savedPatient = patientRepository.save(patient);
-            return mapper.map(savedPatient, PatientDetailsDTO.class);
+            return this.convertToPatientDetailsDTO(savedPatient);
         }
         throw  new ResourceNotFoundException("Patient not found with id: " + id);
     }
@@ -57,25 +58,29 @@ public class PatientService {
         patientRepository.deleteById(id);
     }
 
-    public List<PatientDetailsDTO> findByDobBetween(LocalDate startDate, LocalDate endDate) {
+    public List<PatientSummaryDTO> findByDobBetween(LocalDate startDate, LocalDate endDate) {
         List<Patient> byDobBetween = patientRepository.findByDobBetween(startDate, endDate);
         return byDobBetween.stream()
-                .map((element) -> mapper.map(element, PatientDetailsDTO.class))
+                .map(this::convertToPatientSummaryDTO)
                 .toList();
     }
 
-    public List<Patient> findByNameLike(String name) {
-        return patientRepository.findByNameLike(name);
+    public List<PatientSummaryDTO> findByNameLike(String name) {
+        List<Patient> byNameLike = patientRepository.findByNameLike(name);
+        return byNameLike.stream()
+                .map(this::convertToPatientSummaryDTO)
+                .toList();
     }
 
-    public Patient getByEmail(String email) {
-        return patientRepository.findByEmail(email);
+    public PatientSummaryDTO getByEmail(String email) {
+        Patient byEmail = patientRepository.findByEmail(email);
+        return this.convertToPatientSummaryDTO(byEmail);
     }
 
-    public List<PatientDetailsDTO> getByBloodGroup(BloodGroupType bloodGroup) {
+    public List<PatientSummaryDTO> getByBloodGroup(BloodGroupType bloodGroup) {
         List<Patient> byBloodGroup = patientRepository.findByBloodGroup(bloodGroup);
         return byBloodGroup.stream()
-                .map(patient -> mapper.map(patient, PatientDetailsDTO.class))
+                .map(this::convertToPatientSummaryDTO)
                 .toList();
     }
 
@@ -92,7 +97,7 @@ public class PatientService {
                 .build();
     }
 
-    private Patient convertToPatientEntity(PatientSummaryDTO patientDTO) {
+    private Patient convertToPatientEntity(PatientReqDTO patientDTO) {
         return Patient.builder()
                 .name(patientDTO.getName())
                 .email(patientDTO.getEmail())
