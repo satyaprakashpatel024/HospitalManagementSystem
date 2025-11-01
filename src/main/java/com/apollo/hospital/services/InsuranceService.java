@@ -1,11 +1,13 @@
 package com.apollo.hospital.services;
 
-import com.apollo.hospital.dtos.InsuranceDTO;
-import  com.apollo.hospital.entities.Insurance;
-import  com.apollo.hospital.entities.Patient;
+import com.apollo.hospital.dtos.request.InsuranceReqDTO;
+import com.apollo.hospital.dtos.response.InsuranceRespDTO;
+import com.apollo.hospital.dtos.response.PatientDetailsDTO;
+import com.apollo.hospital.entities.Insurance;
+import com.apollo.hospital.entities.Patient;
 import com.apollo.hospital.exceptions.ResourceNotFoundException;
-import  com.apollo.hospital.repositories.InsuranceRepository;
-import  com.apollo.hospital.repositories.PatientRepository;
+import com.apollo.hospital.repositories.InsuranceRepository;
+import com.apollo.hospital.repositories.PatientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -19,31 +21,54 @@ public class InsuranceService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public Patient assignInsuranceToPatient(Insurance insurance, Long patientId) throws ResourceNotFoundException {
+    public PatientDetailsDTO assignInsuranceToPatient(InsuranceReqDTO insurance, Long patientId) throws ResourceNotFoundException {
         Patient patient = patientRepository.findById(patientId).
-                orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-        patient.setInsurance(insurance);
+                orElseThrow(() -> new ResourceNotFoundException("Patient not found With this id : " + patientId));
+        Insurance existingInsurance = insuranceRepository.findByPolicyNumber(insurance.getPolicyNumber());
+        Insurance map = modelMapper.map(insurance, Insurance.class);
+        patient.setInsurance(map);
         patientRepository.save(patient);
-        return patient;
+        return convertToPatientDetailsDTO(patient);
     }
 
     @Transactional
     public Patient disassociateInsuranceFromPatient(Long patientId) throws ResourceNotFoundException {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found With this id : " + patientId));
         patient.setInsurance(null);
         patientRepository.save(patient);
         return patient;
     }
 
-    public Insurance createInsurance(InsuranceDTO insurance) {
-        Insurance map = modelMapper.map(insurance, Insurance.class);
-        return insuranceRepository.save(map);
-    }
-
-    public InsuranceDTO getInsuranceById(Long insuranceId) throws ResourceNotFoundException {
+    public InsuranceRespDTO getInsuranceById(Long insuranceId) throws ResourceNotFoundException {
         Insurance insurance = insuranceRepository.findById(insuranceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Insurance not found with id: " + insuranceId));
-        return modelMapper.map(insurance, InsuranceDTO.class);
+        return modelMapper.map(insurance, InsuranceRespDTO.class);
     }
+
+    private PatientDetailsDTO convertToPatientDetailsDTO(Patient patient) {
+        return PatientDetailsDTO.builder()
+                .id(patient.getId())
+                .name(patient.getName())
+                .email(patient.getEmail())
+                .gender(patient.getGender())
+                .bloodGroup(patient.getBloodGroup())
+                .dob(patient.getDob())
+                .createdAt(patient.getCreatedAt())
+                .insurance(convertToInsuranceRespDTO(patient.getInsurance()))
+                .build();
+    }
+
+    private InsuranceRespDTO convertToInsuranceRespDTO(Insurance insurance) {
+        if (insurance == null) return null;
+        return InsuranceRespDTO.builder()
+                .id(insurance.getId())
+                .providerName(insurance.getProviderName())
+                .policyNumber(insurance.getPolicyNumber())
+                .coverageAmount(insurance.getCoverageAmount())
+                .validTill(insurance.getValidTill())
+                .createdAt(insurance.getCreatedAt())
+                .build();
+    }
+
 }

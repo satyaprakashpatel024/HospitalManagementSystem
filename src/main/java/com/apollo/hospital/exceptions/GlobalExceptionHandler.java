@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return buildResponse(ex.getMessage() != null ? ex.getMessage() : "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
+    @ExceptionHandler(DuplicateInsuranceException.class)
+    public ResponseEntity<Object> handleDuplicateInsurance(DuplicateInsuranceException ex, WebRequest request) {
+        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT, request);
+    }
+
     private ResponseEntity<Object> buildResponse(String message, HttpStatus status, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());

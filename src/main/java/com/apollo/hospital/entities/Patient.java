@@ -1,9 +1,11 @@
 package com.apollo.hospital.entities;
 
 import com.apollo.hospital.entities.types.BloodGroupType;
+import com.apollo.hospital.entities.types.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -36,7 +38,8 @@ public class Patient {
     private LocalDate dob;
 
     @Column(length = 10)
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -50,6 +53,7 @@ public class Patient {
     @JoinColumn(name = "insurance_id", referencedColumnName = "id")
     private Insurance insurance;
 
+    @BatchSize(size = 5)
     @JsonIgnore
     @OneToMany(mappedBy = "patient", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Appointment> appointments = new ArrayList<>();

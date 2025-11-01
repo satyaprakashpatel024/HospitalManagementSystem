@@ -1,17 +1,18 @@
 package   com.apollo.hospital.controllers;
 
-import com.apollo.hospital.dtos.PatientDetailsDTO;
-import com.apollo.hospital.dtos.PatientSummaryDTO;
 import com.apollo.hospital.dtos.request.PatientReqDTO;
+import com.apollo.hospital.dtos.response.PatientDetailsDTO;
+import com.apollo.hospital.dtos.response.PatientSummaryDTO;
+import com.apollo.hospital.entities.types.BloodGroupType;
 import com.apollo.hospital.exceptions.ResourceNotFoundException;
 import com.apollo.hospital.services.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,10 +37,10 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDetailsDTO> updatePatient(@PathVariable("id") Long id, @RequestBody PatientReqDTO patientReqDTO) {
-        PatientDetailsDTO updatedPatient = null;
+    public ResponseEntity<PatientDetailsDTO> updatePatient(
+            @PathVariable("id") Long id, @RequestBody PatientReqDTO patientReqDTO) {
         try {
-            updatedPatient = patientService.updatePatient(id, patientReqDTO);
+            PatientDetailsDTO updatedPatient = patientService.updatePatient(id, patientReqDTO);
             return ResponseEntity.ok(updatedPatient);
         } catch (ResourceNotFoundException e) {
             throw new RuntimeException(e);
@@ -47,8 +48,11 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PatientSummaryDTO>> getAllPatients() {
-        List<PatientSummaryDTO> patients = patientService.getAllPatients();
+    public ResponseEntity<Page<PatientSummaryDTO>> getAllPatients(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<PatientSummaryDTO> patients = patientService.getAllPatients(page, size, sortBy);
         return ResponseEntity.ok(patients);
     }
 
@@ -59,10 +63,33 @@ public class PatientController {
     }
 
     @GetMapping("/by-dob")
-    public ResponseEntity<List<PatientSummaryDTO>> getPatientsByDobBetween(
+    public ResponseEntity<Page<PatientSummaryDTO>> getPatientsByDobBetween(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<PatientSummaryDTO> patients = patientService.findByDobBetween(startDate, endDate);
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dob") String sortBy) {
+        Page<PatientSummaryDTO> patients = patientService.findByDobBetween(startDate, endDate, page, size, sortBy);
+        return ResponseEntity.ok(patients);
+    }
+
+    @GetMapping("/by-blood-type")
+    public ResponseEntity<Page<PatientSummaryDTO>> getPatientsByBloodType(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam("bloodType") String bloodType) {
+        Page<PatientSummaryDTO> patients = patientService.getByBloodGroup(BloodGroupType.valueOf(bloodType), page, size, sortBy);
+        return ResponseEntity.ok(patients);
+    }
+
+    @GetMapping("/by-name")
+    public ResponseEntity<Page<PatientSummaryDTO>> getPatientsByNameLike(
+            @RequestParam("name") String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<PatientSummaryDTO> patients = patientService.findByNameLike(name, page, size, sortBy);
         return ResponseEntity.ok(patients);
     }
 }

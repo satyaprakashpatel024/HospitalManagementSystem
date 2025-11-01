@@ -1,6 +1,7 @@
-package com.apollo.hospital.dtos;
+package com.apollo.hospital.dtos.response;
 
 import com.apollo.hospital.entities.types.BloodGroupType;
+import com.apollo.hospital.entities.types.Gender;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -19,8 +20,8 @@ public class PatientDetailsDTO {
     private String name;
     private String email;
     private LocalDate dob;
-    private String gender;
+    private Gender gender;
     private LocalDateTime createdAt;
     private BloodGroupType bloodGroup;
-    private InsuranceDTO insurance;
+    private InsuranceRespDTO insurance;
 }

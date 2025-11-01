@@ -1,7 +1,11 @@
 package com.apollo.hospital.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -27,6 +31,7 @@ public class Doctor {
     @Column(nullable = false, length = 50)
     private String specialization;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "doctors",fetch = FetchType.LAZY)
     private List<Department> departments;
 

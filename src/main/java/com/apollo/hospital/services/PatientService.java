@@ -1,20 +1,25 @@
 package com.apollo.hospital.services;
 
-import com.apollo.hospital.dtos.InsuranceDTO;
-import com.apollo.hospital.dtos.PatientDetailsDTO;
-import com.apollo.hospital.dtos.PatientSummaryDTO;
 import com.apollo.hospital.dtos.request.PatientReqDTO;
+import com.apollo.hospital.dtos.response.InsuranceRespDTO;
+import com.apollo.hospital.dtos.response.PatientDetailsDTO;
+import com.apollo.hospital.dtos.response.PatientSummaryDTO;
 import com.apollo.hospital.entities.Insurance;
 import com.apollo.hospital.entities.Patient;
 import com.apollo.hospital.entities.types.BloodGroupType;
+import com.apollo.hospital.entities.types.Gender;
 import com.apollo.hospital.exceptions.ResourceNotFoundException;
 import com.apollo.hospital.repositories.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +28,14 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final ModelMapper mapper;
 
-    public List<PatientSummaryDTO> getAllPatients() {
-        List<Patient> all = patientRepository.findAll();
-        return all.stream()
-                .map(this::convertToPatientSummaryDTO)
-                .toList();
+    public Page<PatientSummaryDTO> getAllPatients(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Patient> all = patientRepository.findAll(pageable);
+        return all.map(this::convertToPatientSummaryDTO);
     }
 
     public PatientDetailsDTO getPatientById(Long id) throws ResourceNotFoundException {
-        Patient patient = patientRepository.findById(id).orElse(null);
-        if (patient == null) {
-            throw  new ResourceNotFoundException("Patient not found with id: " + id);
-        }
+        Patient patient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
         return this.convertToPatientDetailsDTO(patient);
     }
 
@@ -45,43 +46,37 @@ public class PatientService {
     }
 
     public PatientDetailsDTO updatePatient(Long id, PatientReqDTO patientReqDTO) throws ResourceNotFoundException {
-        Patient patient = patientRepository.findById(id).orElse(null);
-        if (patient != null) {
+        Patient patient = patientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
             mapper.map(patientReqDTO, patient);
             Patient savedPatient = patientRepository.save(patient);
             return this.convertToPatientDetailsDTO(savedPatient);
-        }
-        throw  new ResourceNotFoundException("Patient not found with id: " + id);
     }
 
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
 
-    public List<PatientSummaryDTO> findByDobBetween(LocalDate startDate, LocalDate endDate) {
-        List<Patient> byDobBetween = patientRepository.findByDobBetween(startDate, endDate);
-        return byDobBetween.stream()
-                .map(this::convertToPatientSummaryDTO)
-                .toList();
+    public Page<PatientSummaryDTO> findByDobBetween(LocalDate startDate, LocalDate endDate, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Patient> byDobBetween = patientRepository.findByDobBetween(pageable, startDate, endDate);
+        return byDobBetween.map(this::convertToPatientSummaryDTO);
     }
 
-    public List<PatientSummaryDTO> findByNameLike(String name) {
-        List<Patient> byNameLike = patientRepository.findByNameLike(name);
-        return byNameLike.stream()
-                .map(this::convertToPatientSummaryDTO)
-                .toList();
+    public Page<PatientSummaryDTO> findByNameLike(String name, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Patient> byNameLike = patientRepository.findByNameLike(pageable, name);
+        return byNameLike.map(this::convertToPatientSummaryDTO);
     }
 
-    public PatientSummaryDTO getByEmail(String email) {
-        Patient byEmail = patientRepository.findByEmail(email);
+    public PatientSummaryDTO getByEmail(String email) throws ResourceNotFoundException {
+        Patient byEmail = patientRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Patient not found with email : " + email));
         return this.convertToPatientSummaryDTO(byEmail);
     }
 
-    public List<PatientSummaryDTO> getByBloodGroup(BloodGroupType bloodGroup) {
-        List<Patient> byBloodGroup = patientRepository.findByBloodGroup(bloodGroup);
-        return byBloodGroup.stream()
-                .map(this::convertToPatientSummaryDTO)
-                .toList();
+    public Page<PatientSummaryDTO> getByBloodGroup(BloodGroupType bloodGroup, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Patient> byBloodGroup = patientRepository.findByBloodGroup(pageable, bloodGroup);
+        return byBloodGroup.map(this::convertToPatientSummaryDTO);
     }
 
     private PatientDetailsDTO convertToPatientDetailsDTO(Patient patient) {
@@ -102,14 +97,14 @@ public class PatientService {
                 .name(patientDTO.getName())
                 .email(patientDTO.getEmail())
                 .dob(patientDTO.getDob())
-                .gender(patientDTO.getGender())
+                .gender(Gender.valueOf(patientDTO.getGender()))
                 .bloodGroup(patientDTO.getBloodGroup())
                 .build();
     }
 
-    private InsuranceDTO convertToInsuranceDTO(Insurance insurance) {
+    private InsuranceRespDTO convertToInsuranceDTO(Insurance insurance) {
         if(insurance==null) return null;
-        return InsuranceDTO.builder()
+        return InsuranceRespDTO.builder()
                 .id(insurance.getId())
                 .providerName(insurance.getProviderName())
                 .policyNumber(insurance.getPolicyNumber())

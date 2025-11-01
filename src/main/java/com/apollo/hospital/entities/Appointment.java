@@ -1,7 +1,11 @@
 package com.apollo.hospital.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 
@@ -12,7 +16,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@BatchSize(size = 10)
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,17 +28,17 @@ public class Appointment {
     @Column(nullable = false, length = 100)
     private String reason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Doctor doctor;
 
     @Override
     public String toString() {
-        return "Appointment{" +
+        return "Appointment {" +
                 "id=" + id +
                 ", appointmentDate=" + appointmentDate +
                 ", reason=" + reason +

@@ -1,4 +1,4 @@
-package com.apollo.hospital.dtos;
+package com.apollo.hospital.dtos.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class InsuranceDTO {
+public class InsuranceRespDTO {
     private Long id;
     private String providerName;
     private String policyNumber;
