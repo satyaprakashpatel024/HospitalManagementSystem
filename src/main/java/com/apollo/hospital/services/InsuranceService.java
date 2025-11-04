@@ -5,6 +5,7 @@ import com.apollo.hospital.dtos.response.InsuranceRespDTO;
 import com.apollo.hospital.dtos.response.PatientDetailsDTO;
 import com.apollo.hospital.entities.Insurance;
 import com.apollo.hospital.entities.Patient;
+import com.apollo.hospital.exceptions.PatientNotFoundException;
 import com.apollo.hospital.exceptions.ResourceNotFoundException;
 import com.apollo.hospital.repositories.InsuranceRepository;
 import com.apollo.hospital.repositories.PatientRepository;
@@ -21,9 +22,9 @@ public class InsuranceService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public PatientDetailsDTO assignInsuranceToPatient(InsuranceReqDTO insurance, Long patientId) throws ResourceNotFoundException {
+    public PatientDetailsDTO assignInsuranceToPatient(InsuranceReqDTO insurance, Long patientId) throws PatientNotFoundException {
         Patient patient = patientRepository.findById(patientId).
-                orElseThrow(() -> new ResourceNotFoundException("Patient not found With this id : " + patientId));
+                orElseThrow(() -> new PatientNotFoundException("Patient not found With this id : " + patientId));
         Insurance existingInsurance = insuranceRepository.findByPolicyNumber(insurance.getPolicyNumber());
         Insurance map = modelMapper.map(insurance, Insurance.class);
         patient.setInsurance(map);

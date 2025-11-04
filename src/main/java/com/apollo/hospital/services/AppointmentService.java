@@ -5,7 +5,8 @@ import com.apollo.hospital.dtos.response.AppointmentRespDTO;
 import com.apollo.hospital.entities.Appointment;
 import com.apollo.hospital.entities.Doctor;
 import com.apollo.hospital.exceptions.AppointmentNotFoundException;
-import com.apollo.hospital.exceptions.ResourceNotFoundException;
+import com.apollo.hospital.exceptions.DoctorNotFoundException;
+import com.apollo.hospital.exceptions.PatientNotFoundException;
 import com.apollo.hospital.repositories.AppointmentRepository;
 import com.apollo.hospital.repositories.DoctorRepository;
 import com.apollo.hospital.repositories.PatientRepository;
@@ -25,11 +26,11 @@ public class AppointmentService {
     private final DoctorRepository doctorRepository;
 
     @Transactional
-    public AppointmentRespDTO bookAppointment(AppointmentReqDTO appointment, Long patientId, Long doctorId) throws ResourceNotFoundException {
+    public AppointmentRespDTO bookAppointment(AppointmentReqDTO appointment, Long patientId, Long doctorId) throws DoctorNotFoundException, PatientNotFoundException {
         var patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + patientId));
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: " + patientId));
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + doctorId));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor not found with id: " + doctorId));
         Appointment appointment1 = convertToAppointmentEntity(appointment);
         appointment1.setPatient(patient);
         appointment1.setDoctor(doctor);
@@ -40,11 +41,11 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentRespDTO reassignDoctor(Long appointmentId, Long newDoctorId) throws ResourceNotFoundException, AppointmentNotFoundException {
+    public AppointmentRespDTO reassignDoctor(Long appointmentId, Long newDoctorId) throws AppointmentNotFoundException, DoctorNotFoundException {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new AppointmentNotFoundException("Appointment not found with id: " + appointmentId));
         Doctor newDoctor = doctorRepository.findById(newDoctorId)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with id: " + newDoctorId));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor not found with id: " + newDoctorId));
         appointment.setDoctor(newDoctor);
         newDoctor.getAppointments().add(appointment);
         return convertToAppointmentRespDTO(appointment);

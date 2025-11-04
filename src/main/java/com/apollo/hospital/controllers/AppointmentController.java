@@ -3,7 +3,8 @@ package com.apollo.hospital.controllers;
 import com.apollo.hospital.dtos.request.AppointmentReqDTO;
 import com.apollo.hospital.dtos.response.AppointmentRespDTO;
 import com.apollo.hospital.exceptions.AppointmentNotFoundException;
-import com.apollo.hospital.exceptions.ResourceNotFoundException;
+import com.apollo.hospital.exceptions.DoctorNotFoundException;
+import com.apollo.hospital.exceptions.PatientNotFoundException;
 import com.apollo.hospital.services.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public class AppointmentController {
     @PutMapping("/reschedule/{id}")
     public ResponseEntity<AppointmentRespDTO> rescheduleAppointment(
             @PathVariable("id") Long appointmentId,
-            @RequestBody AppointmentReqDTO updatedAppointmentDate) throws ResourceNotFoundException, AppointmentNotFoundException {
+            @RequestBody AppointmentReqDTO updatedAppointmentDate) throws AppointmentNotFoundException {
         AppointmentRespDTO appointment = appointmentService.rescheduleAppointment(appointmentId, updatedAppointmentDate);
         return ResponseEntity.accepted().body(appointment);
     }
@@ -55,7 +56,7 @@ public class AppointmentController {
     public ResponseEntity<AppointmentRespDTO> bookAppointment(
             @RequestParam Long patientId,
             @RequestParam Long doctorId,
-            @RequestBody AppointmentReqDTO appointmentReq) throws ResourceNotFoundException {
+            @RequestBody AppointmentReqDTO appointmentReq) throws PatientNotFoundException, DoctorNotFoundException {
         AppointmentRespDTO appointment = appointmentService.bookAppointment(appointmentReq, patientId, doctorId);
         return ResponseEntity.ok(appointment);
     }
@@ -63,7 +64,7 @@ public class AppointmentController {
     @PutMapping("/reassign-doctor")
     public ResponseEntity<AppointmentRespDTO> reassignDoctor(
             @RequestParam Long appointmentId,
-            @RequestParam Long newDoctorId) throws AppointmentNotFoundException, ResourceNotFoundException {
+            @RequestParam Long newDoctorId) throws AppointmentNotFoundException, DoctorNotFoundException {
         AppointmentRespDTO updatedAppointment = appointmentService.reassignDoctor(appointmentId, newDoctorId);
         return ResponseEntity.ok(updatedAppointment);
     }

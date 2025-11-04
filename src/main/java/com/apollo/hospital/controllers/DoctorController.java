@@ -2,7 +2,7 @@ package com.apollo.hospital.controllers;
 
 import com.apollo.hospital.dtos.request.DoctorReqDTO;
 import com.apollo.hospital.dtos.response.DoctorRespDTO;
-import com.apollo.hospital.exceptions.ResourceNotFoundException;
+import com.apollo.hospital.exceptions.DoctorNotFoundException;
 import com.apollo.hospital.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +29,7 @@ public class DoctorController {
 
     // Get a doctor by ID
     @GetMapping("/{id}")
-    public ResponseEntity<DoctorRespDTO> getDoctorById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<DoctorRespDTO> getDoctorById(@PathVariable Long id) throws DoctorNotFoundException {
         DoctorRespDTO respDto = doctorService.getDoctorById(id);
         return ResponseEntity.ok(respDto);
     }
@@ -38,8 +38,9 @@ public class DoctorController {
     @GetMapping
     public ResponseEntity<Page<DoctorRespDTO>> getDoctors(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<DoctorRespDTO> pageDto = doctorService.getDoctors(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<DoctorRespDTO> pageDto = doctorService.getDoctors(page, size, sortBy);
         return ResponseEntity.ok(pageDto);
     }
 
@@ -47,7 +48,7 @@ public class DoctorController {
     @PutMapping("/{id}")
     public ResponseEntity<DoctorRespDTO> updateDoctor(
             @PathVariable Long id,
-            @RequestBody DoctorReqDTO reqDto) throws ResourceNotFoundException {
+            @RequestBody DoctorReqDTO reqDto) throws DoctorNotFoundException {
 
         DoctorRespDTO respDto = doctorService.updateDoctor(id, reqDto);
         return ResponseEntity.ok(respDto);
@@ -55,7 +56,7 @@ public class DoctorController {
 
     // Delete a doctor
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> deleteDoctor(@PathVariable Long id) throws DoctorNotFoundException {
         doctorService.deleteDoctor(id);
         return ResponseEntity.noContent().build();  // HTTP 204 No Content
     }
