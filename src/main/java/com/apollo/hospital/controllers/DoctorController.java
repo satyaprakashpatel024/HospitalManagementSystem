@@ -49,7 +49,6 @@ public class DoctorController {
     public ResponseEntity<DoctorRespDTO> updateDoctor(
             @PathVariable Long id,
             @RequestBody DoctorReqDTO reqDto) throws DoctorNotFoundException {
-
         DoctorRespDTO respDto = doctorService.updateDoctor(id, reqDto);
         return ResponseEntity.ok(respDto);
     }

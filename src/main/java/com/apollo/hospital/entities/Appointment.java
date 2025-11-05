@@ -1,5 +1,7 @@
 package com.apollo.hospital.entities;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +19,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @BatchSize(size = 10)
+@Hidden
+@Schema(hidden = true)
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

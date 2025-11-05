@@ -1,8 +1,13 @@
 package com.apollo.hospital.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
@@ -18,6 +23,8 @@ import java.time.LocalDateTime;
         @UniqueConstraint(name = "uk_policy_number", columnNames = "policyNumber"),
         @UniqueConstraint(name = "uk_insurance_id", columnNames = "id")
 })
+@Hidden
+@Schema(hidden = true)
 public class Insurance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

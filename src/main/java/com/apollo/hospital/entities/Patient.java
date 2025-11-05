@@ -3,6 +3,8 @@ package com.apollo.hospital.entities;
 import com.apollo.hospital.entities.types.BloodGroupType;
 import com.apollo.hospital.entities.types.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -23,6 +25,8 @@ import java.util.List;
         @UniqueConstraint(name = "uk_patient_email", columnNames = "email"),
         @UniqueConstraint(name = "uk_patent_id", columnNames = "id")
 })
+@Hidden
+@Schema(hidden = true)
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

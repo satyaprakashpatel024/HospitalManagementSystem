@@ -1,6 +1,8 @@
 package com.apollo.hospital.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +20,8 @@ import java.util.List;
         @UniqueConstraint(name = "uk_doctor_email", columnNames = "email"),
         @UniqueConstraint(name = "uk_doctor_id", columnNames = "id")
 })
+@Hidden
+@Schema(hidden = true)
 public class Doctor {
 
     @Id

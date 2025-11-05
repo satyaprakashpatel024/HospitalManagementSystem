@@ -1,5 +1,7 @@
 package com.apollo.hospital.entities;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Schema(hidden = true)
+@Hidden
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
