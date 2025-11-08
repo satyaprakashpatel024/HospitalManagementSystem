@@ -78,4 +78,8 @@ public class Patient {
     public Long getInsuranceId() {
         return insurance != null ? insurance.getId() : null;
     }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Users user;
 }

@@ -3,6 +3,7 @@ package com.apollo.hospital.repositories;
 import com.apollo.hospital.entities.Doctor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +12,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
+
+    @Override
+    @EntityGraph(attributePaths = {"department"})
+    Page<Doctor> findAll(Pageable pageable);
 
     // 1️⃣ Find doctor by email (single result)
     @Query("SELECT d FROM Doctor d WHERE d.email = :email")
@@ -30,10 +35,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     // 5️⃣ Count of appointments for a doctor (single result)
     @Query("SELECT COUNT(a) FROM Doctor d JOIN d.appointments a WHERE d.id = :doctorId")
     Long countAppointmentsByDoctor(@Param("doctorId") Long doctorId);
-
-    // 6️⃣ Fetch doctor with department eagerly (single result)
-    @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.department WHERE d.id = :id")
-    Optional<Doctor> findDoctorWithDepartment(@Param("id") Long id);
 
     // 7️⃣ Fetch doctor with appointments eagerly (single result)
     @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.appointments WHERE d.id = :id")

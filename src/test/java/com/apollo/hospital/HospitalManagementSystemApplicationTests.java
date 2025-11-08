@@ -1,6 +1,7 @@
 package com.apollo.hospital;
 
-import com.apollo.hospital.services.PatientService;
+import com.apollo.hospital.dtos.response.UserRespDTO;
+import com.apollo.hospital.services.UserServices;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,13 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 class HospitalManagementSystemApplicationTests {
 
     @Autowired
-    private PatientService patientService;
+    private UserServices userServices;
 
     @Test
     public void getAll(){
-//        List<PatientSummaryDTO> allPatients = patientService.getAllPatients();
-//        for(PatientSummaryDTO patient : allPatients){
-//            System.out.println("Patient Name: " + patient.getName() + ", Insurance ID: " + patient.getInsuranceId());
-//        }
+        UserRespDTO userByEmail = userServices.findUserByEmail("dr.lisa.wong@hospital.com");
+        System.out.println(userByEmail);
     }
 }

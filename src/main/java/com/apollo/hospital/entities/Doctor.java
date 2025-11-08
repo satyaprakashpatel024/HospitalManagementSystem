@@ -49,6 +49,10 @@ public class Doctor {
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Users user;
+
     @Override
     public String toString() {
         return "Doctor{" +

@@ -1,18 +1,18 @@
 package com.apollo.hospital.dtos.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DepartmentRespDTO {
+@ToString
+public class UserRespDTO {
     private Long id;
-    private String name;
-    private String headDoctor;
+    private String email;
+    private String role;
+    private Boolean isActive;
 }

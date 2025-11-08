@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,5 +16,5 @@ public class DoctorRespDTO {
     private String name;
     private String email;
     private String specialization;
-    private List<DepartmentRespDTO> departments;
+    private DepartmentRespDTO departments;
 }

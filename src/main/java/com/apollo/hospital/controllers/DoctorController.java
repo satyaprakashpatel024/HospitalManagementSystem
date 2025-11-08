@@ -60,4 +60,34 @@ public class DoctorController {
         return ResponseEntity.noContent().build();  // HTTP 204 No Content
     }
 
+    @GetMapping("/specialization")
+    public ResponseEntity<Page<DoctorRespDTO>> getDoctorsBySpecialization(
+            @RequestParam String specialization,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<DoctorRespDTO> pageDto = doctorService.getDoctorsBySpecialization(specialization, page, size, sortBy);
+        return ResponseEntity.ok(pageDto);
+    }
+
+    @GetMapping("/department")
+    public ResponseEntity<Page<DoctorRespDTO>> getDoctorsByDepartmentId(
+            @RequestParam Long departmentId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<DoctorRespDTO> pageDto = doctorService.getDoctorsByDepartmentId(departmentId, page, size, sortBy);
+        return ResponseEntity.ok(pageDto);
+    }
+
+    @GetMapping("/appointments")
+    public ResponseEntity<Page<DoctorRespDTO>> getDoctorsWithAppointmentsOn(
+            @RequestParam String date,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
+        Page<DoctorRespDTO> pageDto = doctorService.getDoctorsWithAppointmentsOn(date, page, size, sortBy);
+        return ResponseEntity.ok(pageDto);
+    }
+
 }

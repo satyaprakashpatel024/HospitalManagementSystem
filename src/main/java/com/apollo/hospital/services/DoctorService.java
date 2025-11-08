@@ -1,7 +1,9 @@
 package com.apollo.hospital.services;
 
 import com.apollo.hospital.dtos.request.DoctorReqDTO;
+import com.apollo.hospital.dtos.response.DepartmentRespDTO;
 import com.apollo.hospital.dtos.response.DoctorRespDTO;
+import com.apollo.hospital.entities.Department;
 import com.apollo.hospital.entities.Doctor;
 import com.apollo.hospital.exceptions.DoctorNotFoundException;
 import com.apollo.hospital.repositories.DoctorRepository;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class DoctorService {
@@ -49,6 +53,25 @@ public class DoctorService {
         return toResponseDto(updated);
     }
 
+    public Page<DoctorRespDTO> getDoctorsBySpecialization(String specialization, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Doctor> pageEntity = doctorRepository.findBySpecialization(specialization, pageable);
+        return pageEntity.map(this::toResponseDto);
+    }
+
+    public Page<DoctorRespDTO> getDoctorsByDepartmentId(Long departmentId, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Doctor> pageEntity = doctorRepository.findDoctorsByDepartmentId(departmentId, pageable);
+        return pageEntity.map(this::toResponseDto);
+    }
+
+    public Page<DoctorRespDTO> getDoctorsWithAppointmentsOn(String date, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        LocalDate localDate = LocalDate.parse(date);
+        Page<Doctor> pageEntity = doctorRepository.findDoctorsWithAppointmentsOn(localDate, pageable);
+        return pageEntity.map(this::toResponseDto);
+    }
+
     public void deleteDoctor(Long id) throws DoctorNotFoundException {
         Doctor entity = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor not found with id: " + id));
@@ -62,6 +85,7 @@ public class DoctorService {
                 .name(doctor.getName())
                 .email(doctor.getEmail())
                 .specialization(doctor.getSpecialization())
+                .departments(fromDepartmentEntityToDto(doctor.getDepartment()))
                 .build();
     }
 
@@ -71,6 +95,17 @@ public class DoctorService {
                 .email(req.getEmail())
                 .department(req.getDepartment())
                 .specialization(req.getSpecialization()).build();
+    }
+
+    private DepartmentRespDTO fromDepartmentEntityToDto(Department department) {
+        if (department == null) {
+            return null;
+        }
+        return DepartmentRespDTO.builder()
+                .id(department.getId())
+                .name(department.getName())
+                .headDoctor(department.getHeadDoctor().getName())
+                .build();
     }
 
     private void updateEntityFromRequestDto(Doctor doctor, DoctorReqDTO req) {
