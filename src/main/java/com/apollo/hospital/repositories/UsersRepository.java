@@ -16,7 +16,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     Optional<Users> findByEmail(String email);
 
-    @Query(value = "select * from tbl_users u where u.email = :email and u.is_active = :isActive", nativeQuery = true)
-    Optional<Users> findByEmailAndIsActive(@Param("email") String email, @Param("isActive") Boolean isActive);
+    @Query(value = "select * from tbl_users u where u.email = :email and u.is_active = true", nativeQuery = true)
+    Optional<Users> findByEmailAndIsActive(@Param("email") String email);
 
 }

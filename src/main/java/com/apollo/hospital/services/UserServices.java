@@ -15,7 +15,7 @@ public class UserServices {
     private final UsersRepository usersRepository;
 
     public UserRespDTO findUserByEmail(String email) {
-        Users users = usersRepository.findByEmailAndIsActive(email, true).orElse(null);
+        Users users = usersRepository.findByEmailAndIsActive(email).orElse(null);
         if (users == null) {
             return null;
         }
